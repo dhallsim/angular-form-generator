@@ -15,20 +15,18 @@ formGenerator.factory('FormFactory', function() {
 		for (var i = 0; i < fields.length; i++) {
 			var field = fields[i];
 
-			if (field.type === 'text' || field.type === 'email' || field.type === 'telephone' || field.type === 'url') {
+			if (field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'telephone' || field.type === 'url' || field.type === 'password') {
 				html += getInputHtml(field);
 			} else if (field.type === 'textarea') {
 				html += getTextareaHtml(field);
 			} else if (field.type === 'radio') {
 				html += getRadioHtml(field);
 			} else if (field.type === 'checkbox') {
-				if(angular.isDefined(field.options) && field.options instanceof Array){
-					html += getArrayCheckboxHtml(field);		
-				}
-				else {
-					html += getSingleCheckboxHtml(field);
-				}
-
+				html += (angular.isDefined(field.options) && (field.options instanceof Array)) ? getArrayCheckboxHtml(field) : getSingleCheckboxHtml(field);
+			} else if (field.type === 'select') {
+				html += getSelectHtml(field);
+			} else {
+				console.warn('Type of ' + field.type + ' not supported.');
 			}
 		}
 
@@ -64,8 +62,8 @@ formGenerator.factory('FormFactory', function() {
 		radioHtml += getLabelHtml(obj.label);
 		for (var i = 0; i < obj.options.length; i++) {
 			radioHtml += '<input type="radio" ' +
-								 'value="' + obj.options[i].value + '" ' +
-								 'ng-model="' + obj.model + '"' +
+								'value="' + obj.options[i].value + '" ' +
+								'ng-model="' + obj.model + '"' +
 						 '/>' + obj.options[i].label;
 		}	
 		return radioHtml;
@@ -75,7 +73,7 @@ formGenerator.factory('FormFactory', function() {
 		if (!obj) return '';
 		var checkboxHtml = '';
 		checkboxHtml += '<input type="checkbox" ' +
-							    'ng-model="' + obj.model + '"' +
+							   'ng-model="' + obj.model + '"' +
 						'/>' + obj.label;
 		return checkboxHtml;
 	}
@@ -86,10 +84,22 @@ formGenerator.factory('FormFactory', function() {
 		checkboxHtml += getLabelHtml(obj.label);
 		for (var i = 0; i < obj.options.length; i++) {
 			checkboxHtml += '<input type="checkbox" ' +
-						            'ng-click="addToCheckboxArray(\'' + obj.options[i].value + '\', \'' + obj.model + '\')"' + 
+						           'ng-click="addToCheckboxArray(\'' + obj.options[i].value + '\', \'' + obj.model + '\')"' + 
 							'/>' + obj.options[i].label;
 		}
 		return checkboxHtml;
+	}
+
+	function getSelectHtml(obj) {
+		if (!obj) return '';
+		var selectHtml = '';
+		selectHtml += getLabelHtml(obj.label);
+		selectHtml += '<select ng-model="' + obj.model + '" ' +
+							  'ng-required="' + obj.required + '" ' +
+							  'ng-options="' + obj.optionsExpression + '" ';
+		selectHtml += (obj.multiple) ? 'multiple' : '';
+		selectHtml += '></select>';
+		return selectHtml;
 	}
 
 	function getLabelHtml(labelText) {
