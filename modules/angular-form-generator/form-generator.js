@@ -126,7 +126,6 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 				var currentObj = scope[props[0]];
 				var finalProp = props[props.length -1];
 				for(var i = 1; i < props.length - 1; i++){
-					debugger;
 					var objLoop = currentObj[props[i]];
 					if(objLoop === undefined){
 						var propName = props[i];
