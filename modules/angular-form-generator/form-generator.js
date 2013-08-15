@@ -122,9 +122,14 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 		scope.addToCheckboxArray = function(value, model) {	
 			var list = scope.$eval(model);
 			if(!(list instanceof Array)){
+				var props = model.split('.');
+				var objLoop = scope[props[0]];
+				var finalProp = props[props.length -1];
+				for(var i = 1; i < props.length - 1; i++){
+					objLoop = obj[prop[i]];
+				}
 				list = [];
-				scope['currentDeveloper']['languages'] = list;
-				debugger;
+				objLoop[finalProp] = list;
 			}
 			if (list.contains(value)) {
 				list.remove(value);
@@ -142,8 +147,6 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 		link: linker
 	}
 });
-
-
 
 Array.prototype.contains = function(obj) {
 	var i = this.length;

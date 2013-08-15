@@ -63,8 +63,7 @@ function indexCtrl($scope) {
 	];
 
 	$scope.person = {
-		codingExperience: 'junior',
-		languages: []
+		codingExperience: 'junior'
 	};
 
 	$scope.fields = [
