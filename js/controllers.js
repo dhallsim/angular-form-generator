@@ -136,7 +136,7 @@ function indexCtrl($scope) {
 		{
 			label: 'Programming Lanuages',
 			type: 'checkbox',
-			model: 'person.languages',
+			model: 'person.test.testing.tested.languages',
 			options: [
 				{
 					label: 'Java',

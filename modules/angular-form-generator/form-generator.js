@@ -123,13 +123,20 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 			var list = scope.$eval(model);
 			if(!(list instanceof Array)){
 				var props = model.split('.');
-				var objLoop = scope[props[0]];
+				var currentObj = scope[props[0]];
 				var finalProp = props[props.length -1];
 				for(var i = 1; i < props.length - 1; i++){
-					objLoop = obj[prop[i]];
+					debugger;
+					var objLoop = currentObj[props[i]];
+					if(objLoop === undefined){
+						var propName = props[i];
+						currentObj[propName] = {};
+						objLoop = currentObj[propName];
+					}
+					currentObj = objLoop;
 				}
 				list = [];
-				objLoop[finalProp] = list;
+				currentObj[finalProp] = list;
 			}
 			if (list.contains(value)) {
 				list.remove(value);
