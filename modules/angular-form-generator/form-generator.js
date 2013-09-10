@@ -160,7 +160,7 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 	}
 });
 
-// Remove these. Prototypes on native objects is terrible.
+// Remove these and implement differently. Prototypes on native objects are terrible.
 Array.prototype.contains = function(obj) {
 	var i = this.length;
 	while (i--) {
