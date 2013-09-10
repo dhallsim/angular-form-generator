@@ -121,22 +121,28 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 
 		scope.addToCheckboxArray = function(value, model) {	
 			var list = scope.$eval(model);
-			if(!(list instanceof Array)){
+
+			if (!(list instanceof Array)) {
 				var props = model.split('.');
 				var currentObj = scope[props[0]];
 				var finalProp = props[props.length -1];
-				for(var i = 1; i < props.length - 1; i++){
+
+				for (var i = 1; i < props.length - 1; i++) { 
 					var objLoop = currentObj[props[i]];
-					if(objLoop === undefined){
+					
+					if (objLoop === undefined) {
 						var propName = props[i];
 						currentObj[propName] = {};
 						objLoop = currentObj[propName];
 					}
+					
 					currentObj = objLoop;
 				}
+
 				list = [];
 				currentObj[finalProp] = list;
 			}
+
 			if (list.contains(value)) {
 				list.remove(value);
 			} else {
@@ -154,6 +160,7 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 	}
 });
 
+// Remove these. Prototypes on native objects is terrible.
 Array.prototype.contains = function(obj) {
 	var i = this.length;
 	while (i--) {
