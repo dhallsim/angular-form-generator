@@ -174,4 +174,16 @@ function indexCtrl($scope) {
 			optionsExpression: 'band.name for band in bands'
 		}
 	];
+
+	$scope.addField = function() {
+		var field = {
+			label: 'Another Input',
+			type: 'text',
+			model: 'person.ballsack',
+			placeholder: 'Enter something',
+			required: false
+		};
+
+		$scope.fields.push(field);
+	};
 }
