@@ -6,7 +6,7 @@ formGenerator.factory('FormFactory', function() {
   var formFactory = {};
 
 	formFactory.getForm = function(fields) {
-		var html = '';
+		var html = '<form>';
 
 		if (!fields || !fields.length) {
 			return '';
@@ -14,6 +14,9 @@ formGenerator.factory('FormFactory', function() {
 
 		for (var i = 0; i < fields.length; i++) {
 			var field = fields[i];
+			field.classes = field.classes || [];
+
+			html += '<div class="form-group">';
 
 			if (field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'telephone' || field.type === 'url' || field.type === 'password') {
 				html += getInputHtml(field);
@@ -28,7 +31,11 @@ formGenerator.factory('FormFactory', function() {
 			} else {
 				console.warn('Type of ' + field.type + ' not supported.');
 			}
+
+			html += '</div>';
 		}
+
+		html += '</form>';
 
 		return html;
 	};
@@ -41,7 +48,16 @@ formGenerator.factory('FormFactory', function() {
 					        'placeholder="' + obj.placeholder + '" ' +
 					        'ng-required="' + obj.required + '" ' +
 					        'ng-model="' + obj.model + '" ' +
-					  '/>';
+					        'class="';
+		
+		for (var i = 0; i < obj.classes.length; i++) {
+			if (i != 0) {
+				inputHtml += ' '; 
+			}
+	        inputHtml += obj.classes[i];
+		}
+		inputHtml += '"/>';
+
 		return inputHtml;
 	}
 
@@ -52,7 +68,15 @@ formGenerator.factory('FormFactory', function() {
 		textareaHtml += '<textarea placeholder="' + obj.placeholder + '" ' +
 							      'ng-required="' + obj.required + '" ' +
 							      'ng-model="' + obj.model + '" ' +
-						'></textarea>';
+							      'class="';
+		
+		for (var i = 0; i < obj.classes.length; i++) {
+			if (i != 0) {
+				textareaHtml += ' '; 
+			}
+	        textareaHtml += obj.classes[i];
+		}
+		textareaHtml += '"></textarea>';
 		return textareaHtml;
 	}
 
@@ -113,11 +137,7 @@ formGenerator.factory('FormFactory', function() {
 
 formGenerator.directive('formGenerator', function($compile, FormFactory) {
 	var linker = function(scope, elm, attrs) {
-		var fields = scope.$eval(attrs.formFields);
-		var formHtml = FormFactory.getForm(fields);
-		elm.html(formHtml);
-		$compile(elm.contents())(scope);
-
+		scope.fields = scope.$eval(attrs.formFields);
 
 		scope.addToCheckboxArray = function(value, model) {	
 			var list = scope.$eval(model);
@@ -150,6 +170,20 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 			}
 		};
 
+		scope.compileForm = function() {
+			var formHtml = FormFactory.getForm(scope.fields);
+			elm.html(formHtml);
+			$compile(elm.contents())(scope); 
+		};
+		scope.compileForm();
+
+
+		scope.$watch('fields', function(newValue, oldValue) {
+			if (newValue) {
+				scope.compileForm();
+			}
+		}, true);
+
 	};
 
 	return {
@@ -160,8 +194,8 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 	}
 });
 
-// Remove these and implement differently. Prototypes on native objects are terrible.
-Array.prototype.contains = function(obj) {
+// Remove these and implement differently.
+function contains(a, obj) {
 	var i = this.length;
 	while (i--) {
 		if (this[i] == obj) return true;
