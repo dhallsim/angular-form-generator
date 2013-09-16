@@ -1,0 +1,28 @@
+{
+  "name": "angular-form-generator",
+  "version": "0.1.0",
+  "description": "Angular module to dynamically build HTML forms from a JSON representation.",
+  "main": "angular-form-generator.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dhallsim/angular-form-generator.git"
+  },
+  "keywords": [
+    "angular",
+    "form-generator"
+  ],
+  "author": "Derek Hall",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "url": "https://github.com/dhallsim/angular-form-generator",
+  "bugs": {
+    "url": "https://github.com/dhallsim/angular-form-generator/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-uglify": "~0.2.4"
+  }
+}

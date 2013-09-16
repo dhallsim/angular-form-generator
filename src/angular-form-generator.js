@@ -1,8 +1,8 @@
 'use strict';
 
-var formGenerator = angular.module('formGeneratorModule', []);
+var formGenerator = angular.module('formGenerator', []);
 
-formGenerator.factory('FormFactory', function() {
+formGeneratorFactory.factory('$formGeneratorFactory', function() {
   	var formFactory = {};
   	var groupMap = {};
 
@@ -257,7 +257,7 @@ formGenerator.factory('FormFactory', function() {
 	return formFactory;
 });
 
-formGenerator.directive('formGenerator', function($compile, FormFactory) {
+formGenerator.directive('formGenerator', function($compile, $formGeneratorFactory) {
 	var linker = function(scope, elm, attrs) {
 
 		scope.addToCheckboxArray = function(value, model) {	
@@ -292,7 +292,7 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 		};
 
 		scope.compileForm = function() {
-			var formHtml = FormFactory.getForm(scope.form);
+			var formHtml = $formGeneratorFactory.getForm(scope.form);
 			elm.html(formHtml);
 			$compile(elm.contents())(scope); 
 		};
@@ -304,6 +304,26 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 				scope.compileForm();
 			}
 		}, true);
+
+		// Remove these and implement differently.
+		function contains(a, obj) {
+			var i = this.length;
+			while (i--) {
+				if (this[i] == obj) return true;
+			}
+			return false;
+		};
+
+		Array.prototype.remove = function() {
+			var what, a = arguments, L = a.length, ax;
+			while (L && this.length) {
+				what = a[--L];
+				while ((ax = this.indexOf(what)) !== -1) {
+					this.splice(ax, 1);
+				}
+			}
+			return this;
+		};
 	};
 
 	return {
@@ -313,23 +333,3 @@ formGenerator.directive('formGenerator', function($compile, FormFactory) {
 		link: linker
 	}
 });
-
-// Remove these and implement differently.
-function contains(a, obj) {
-	var i = this.length;
-	while (i--) {
-		if (this[i] == obj) return true;
-	}
-	return false;
-};
-
-Array.prototype.remove = function() {
-	var what, a = arguments, L = a.length, ax;
-	while (L && this.length) {
-		what = a[--L];
-		while ((ax = this.indexOf(what)) !== -1) {
-			this.splice(ax, 1);
-		}
-	}
-	return this;
-};
