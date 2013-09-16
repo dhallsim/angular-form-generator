@@ -373,14 +373,16 @@ function indexCtrl($scope) {
 		var field = {
 			label: {
 				name: 'Another Input',
-				classes: ['poopy'],
+				classes: [],
 				wrapField: false,
 				attributes: {}
 			},
 			type: 'text',
 			model: 'person.ballsack',
 			placeholder: 'Enter something',
-			required: false
+			required: false,
+			classes: ['form-control'],
+			group: 1
 		};
 
 		$scope.form.fields.push(field);

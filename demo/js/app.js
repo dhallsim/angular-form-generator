@@ -1,3 +1,3 @@
 'use strict';
 
-var formGeneratorApp = angular.module('formGeneratorApp', ['formGeneratorModule']);
+var formGeneratorApp = angular.module('formGeneratorApp', ['formGenerator']);

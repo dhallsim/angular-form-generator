@@ -2,7 +2,7 @@
 
 var formGenerator = angular.module('formGenerator', []);
 
-formGeneratorFactory.factory('$formGeneratorFactory', function() {
+formGenerator.factory('$formGeneratorFactory', function() {
   	var formFactory = {};
   	var groupMap = {};
 
