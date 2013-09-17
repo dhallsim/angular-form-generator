@@ -1,72 +1,91 @@
 'use strict';
 
-var formGenerator = angular.module('formGenerator', []);
+/*
+	Brainstorm: Types of form fields
 
-formGenerator.factory('$formGeneratorFactory', function() {
-  	var formFactory = {};
-  	var groupMap = {};
+	1. Input (Text, email, telephone, url,...)
+	2. Textarea
+	3. Select
+	4. Select (Multiple)
+	5. Checkboxes
+	6. Radio Buttons
 
-	formFactory.getForm = function(form) {
-		if (!form) {
-			return '';
-		}
+	Model:
+	{
+		// List of classes for the form
+		classes: [],
 
-		var fields = form.fields || [];
-		var groups = form.groups || [];
+		// Object containing key-pair values to use as attributes on the form
+		attributes: {},
 
-		// Builing map for easy retrieval
-		for (var g = 0; g < groups.length; g++) {
-			groupMap[groups[g].id] = groups[g];
-		}
+		// Form fields
+		fields: [
+			// Sample input
+			{
+				label: {
+					// Name of label (this is also what is displayed in the HTML)
+					name: '',
 
-		// Build form
-		var html = '<form ';
-		html += getClassesStr(form.classes);
-		html += getAttributesStr(form.attributes);
-		html += '>';
+					// List of classes for the label
+					classes: [],
 
-		if (!fields || !fields.length) {
-			return '';
-		}
+					// Attributes for the label
+					attributes: {},
 
-		for (var i = 0; i < fields.length; i++) {
-			var field = fields[i];
-			field.classes = field.classes || [];
+					// Boolean determining whether label will wrap the field or not
+					wrapField: false					
+				},
 
-			// Get group for field (if applicable)
-			var fieldGroup = groupMap[field.group];
+				// Type of form field
+				// types: [
 
-			// Build out group
-			if (fieldGroup) {
-				html += '<div ';
-				html += getClassesStr(fieldGroup.classes);
-				html += getAttributesStr(fieldGroup.attributes);
-				html += '>';
+					// All input types supported
+					input: [
+						'text',
+						'email',
+						'password',
+						'number',
+						'telephone',
+						'url'
+					],
+
+					'textarea',
+					'radio',
+					'checkbox',
+					'select' (including multiple)
+				],
+
+				type: 'text',
+				model: 'person.name',
+				placeholder: 'Enter name here',
+				attributes: {},
+				required: false,
+				group: 1
 			}
+		],
 
-			if (isInputType(field.type)) {
-				html += getInputHtml(field);
-			} else if (field.type === 'textarea') {
-				html += getTextareaHtml(field);
-			} else if (field.type === 'radio') {
-				html += getRadioHtml(field);
-			} else if (field.type === 'checkbox') {
-				html += (angular.isDefined(field.options) && (field.options instanceof Array)) ? getArrayCheckboxHtml(field) : getSingleCheckboxHtml(field);
-			} else if (field.type === 'select') {
-				html += getSelectHtml(field);
-			} else {
-				console.warn('Type of ' + field.type + ' not supported.');
+		// Groups for fields. These represent a container for a single field or multiple fields.
+		// The HTML for a group will be a div wrapping the field(s).
+		groups: [
+			{
+				// id that will be referenced by a field object
+				id: '',
+
+				// Name of group
+				name: '',
+
+				// List of classes that will be applied to the group
+				classes: [],
+
+				// Object containing key-pair values to use as atrributes for group
+				attributes: {}
 			}
+		]
+	}
+*/
 
-			if (fieldGroup) {
-				html += '</div>';
-			}
-		}
-
-		html += '</form>';
-
-		return html;
-	};
+var FormFactory = function() {
+	var groupMap = {};
 
 	function isInputType(type) {
 		return (type === 'text' || type === 'email' || type === 'number' || type === 'telephone' || type === 'url' || type === 'password');
@@ -200,7 +219,7 @@ formGenerator.factory('$formGeneratorFactory', function() {
 	}
 
 	function getLabelHtml(obj) {
-		if (!obj || !angular.isObject(obj)) return '';
+		if (!obj || !angular.isObject(obj) || !obj.name) return '';
 
 		var labelHtml = '<label ';
 		labelHtml += getClassesStr(obj.classes);
@@ -211,7 +230,7 @@ formGenerator.factory('$formGeneratorFactory', function() {
 	}
 
 	function wrapWithLabel(labelObj, fieldHtml) {
-		if (!labelObj || !angular.isObject(labelObj)) return '';
+		if (!labelObj || !angular.isObject(labelObj) || !labelObj.name) return '';
 
 		var html = '<label ';
 		html += getClassesStr(labelObj.classes);
@@ -254,11 +273,75 @@ formGenerator.factory('$formGeneratorFactory', function() {
 		return key + '="' + value + '"';
 	}
 
-	return formFactory;
-});
+	this.getForm = function(form) {
+		if (!form) {
+			return '';
+		}
 
-formGenerator.directive('formGenerator', function($compile, $formGeneratorFactory) {
+		var fields = form.fields || [];
+		var groups = form.groups || [];
+
+		// Builing map for easy retrieval
+		groupMap = {};
+		for (var g = 0; g < groups.length; g++) {
+			groupMap[groups[g].id] = groups[g];
+		}
+
+		// Build form
+		var html = '<form ';
+		html += getClassesStr(form.classes);
+		html += getAttributesStr(form.attributes);
+		html += '>';
+
+		if (!fields || !fields.length) {
+			return '';
+		}
+
+		for (var i = 0; i < fields.length; i++) {
+			var field = fields[i];
+			field.classes = field.classes || [];
+
+			// Get group for field (if applicable)
+			var fieldGroup = groupMap[field.group];
+
+			// Build out group
+			if (fieldGroup) {
+				html += '<div ';
+				html += getClassesStr(fieldGroup.classes);
+				html += getAttributesStr(fieldGroup.attributes);
+				html += '>';
+			}
+
+			if (isInputType(field.type)) {
+				html += getInputHtml(field);
+			} else if (field.type === 'textarea') {
+				html += getTextareaHtml(field);
+			} else if (field.type === 'radio') {
+				html += getRadioHtml(field);
+			} else if (field.type === 'checkbox') {
+				html += (angular.isDefined(field.options) && (field.options instanceof Array)) ? getArrayCheckboxHtml(field) : getSingleCheckboxHtml(field);
+			} else if (field.type === 'select') {
+				html += getSelectHtml(field);
+			} else {
+				console.warn('Type of ' + field.type + ' not supported.');
+			}
+
+			if (fieldGroup) {
+				html += '</div>';
+			}
+		}
+
+		html += '</form>';
+
+		return html;
+	};
+};
+
+angular.module('formGenerator', []).
+directive('formGenerator', function($compile) {
 	var linker = function(scope, elm, attrs) {
+		scope.form = scope.$eval(attrs.form);
+		var formFactory = new FormFactory();
 
 		scope.addToCheckboxArray = function(value, model) {	
 			var list = scope.$eval(model);
@@ -292,7 +375,7 @@ formGenerator.directive('formGenerator', function($compile, $formGeneratorFactor
 		};
 
 		scope.compileForm = function() {
-			var formHtml = $formGeneratorFactory.getForm(scope.form);
+			var formHtml = formFactory.getForm(scope.form);
 			elm.html(formHtml);
 			$compile(elm.contents())(scope); 
 		};

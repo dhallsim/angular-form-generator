@@ -1,92 +1,103 @@
 'use strict';
 
-
-/*
-	Brainstorm: Types of form fields
-
-	1. Input (Text, email, telephone, url,...)
-	2. Textarea
-	3. Select
-	4. Select (Multiple)
-	5. Checkboxes
-	6. Radio Buttons
-
-	Model:
-	{
-		// List of classes for the form
-		classes: [],
-
-		// Object containing key-pair values to use as attributes on the form
-		attributes: {},
-
-		// Form fields
-		fields: [
-			// Sample input
-			{
-				label: {
-					// Name of label (this is also what is displayed in the HTML)
-					name: '',
-
-					// List of classes for the label
-					classes: [],
-
-					// Attributes for the label
-					attributes: {},
-
-					// Boolean determining whether label will wrap the field or not
-					wrapField: false					
-				},
-
-				// Type of form field
-				// types: [
-
-					// All input types supported
-					input: [
-						'text',
-						'email',
-						'password',
-						'number',
-						'telephone',
-						'url'
-					],
-
-					'textarea',
-					'radio',
-					'checkbox',
-					'select' (including multiple)
-				],
-
-				type: 'text',
-				model: 'person.name',
-				placeholder: 'Enter name here',
-				attributes: {},
-				required: false,
-				group: 1
-			}
-		],
-
-		// Groups for fields. These represent a container for a single field or multiple fields.
-		// The HTML for a group will be a div wrapping the field(s).
-		groups: [
-			{
-				// id that will be referenced by a field object
-				id: '',
-
-				// Name of group
-				name: '',
-
-				// List of classes that will be applied to the group
-				classes: [],
-
-				// Object containing key-pair values to use as atrributes for group
-				attributes: {}
-			}
-		]
-	}
-*/
-
-
 function indexCtrl($scope) {
+	$scope.editingField = false;
+
+	$scope.fieldTypes = [
+		{
+			name: 'Text Input',
+			value: 'text'
+		},
+		{
+			name: 'Email Input',
+			value: 'email'
+		},
+		{
+			name: 'Password Input',
+			value: 'password'
+		},
+		{
+			name: 'Number Input',
+			value: 'number'
+		},
+		{
+			name: 'Telephone Input',
+			value: 'telephone'
+		},
+		{
+			name: 'Textarea',
+			value: 'textarea'
+		},
+		{
+			name: 'Radio',
+			value: 'radio'
+		},
+		{
+			name: 'Checkbox',
+			value: 'checkbox'
+		},
+		{
+			name: 'Select',
+			value: 'select'
+		}
+	];
+
+	$scope.myForm = {
+		fields: [],
+		groups: []
+	};
+
+	$scope.myFormModel = {};
+
+	$scope.currentField = null;
+	$scope.currentType = null;
+	$scope.currentModel = null;
+
+	$scope.newField = function() {
+		$scope.currentType = $scope.fieldTypes[0];
+		$scope.currentModel = null;
+		$scope.editingField = true;
+		$scope.currentField = {
+			label: {
+				classes: []
+			},
+			options: [],
+			type: $scope.currentType.value
+		};
+		$scope.myForm.fields.push($scope.currentField);
+	};
+
+	$scope.addType = function() {
+		$scope.currentField.type = $scope.currentType.value;
+	};
+
+	$scope.addModel = function() {
+		var modelStr = 'myFormModel.' + $scope.currentModel;
+		$scope.currentField.model = modelStr;
+	};
+
+	$scope.editField = function(field) {
+		$scope.currentModel = (field.model) ? field.model.split('.')[1] : null;
+		$scope.currentField = field;
+		$scope.editingField = true;
+	};
+
+	$scope.deleteField = function(field) {
+		var index = $scope.myForm.fields.indexOf(field);
+		if (index != -1) {
+			$scope.myForm.fields.splice(index, 1);
+			$scope.currentField = null;
+			$scope.currentModel = null;
+			$scope.editingField = false;
+		}
+	};
+
+
+
+
+
+
+
 	$scope.countries = [
 		{
 			name: 'United States',
@@ -320,19 +331,19 @@ function indexCtrl($scope) {
 				],
 				required: true
 			},
-			// {
-			// 	label: {
-			// 		name: 'Country',
-			// 		classes: [],
-			// 		wrapField: true
-			// 	},
-			// 	type: 'select',
-			// 	multiple: false,
-			// 	model: 'person.country',
-			// 	required: true,
-			// 	classes: ['form-control'],
-			// 	optionsExpression: 'country.name for country in countries'
-			// },
+			{
+				label: {
+					name: 'Country',
+					classes: [],
+					wrapField: true
+				},
+				type: 'select',
+				multiple: false,
+				model: 'person.country',
+				required: true,
+				classes: ['form-control'],
+				optionsExpression: 'country.name for country in countries'
+			},
 			{
 				label: {
 					name: 'Select Cool Bands',

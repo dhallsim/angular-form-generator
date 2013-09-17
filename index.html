@@ -15,15 +15,72 @@
 
 </head>
 <body ng-controller="indexCtrl">
-	<div class="container">
+	<div class="container" style="margin-top: 40px;">
 		<div class="row">
-			<div class="col-lg-6">
-				<button class="btn btn-default" ng-click="addField()">Add Input Field</button>
-				<form-generator form="form"></form-generator>
+			<div class="col-lg-4">
+				<h1>Form Fields</h1>
+				<button class="btn btn-default" ng-click="newField()">New Field</button>
+
+				<div ng-show="editingField">
+					<form>
+						<div class="form-group">
+							<label>Label</label>
+							<input type="text" ng-model="currentField.label.name" class="form-control"/>
+
+							<label>Wrap Field?</label>
+							<input type="checkbox" ng-model="currentField.label.wrapField"/>
+						</div>
+						<div class="form-group">
+							<label>Field Type</label>
+							<select ng-change="addType()" ng-model="currentType" ng-options="field.name for field in fieldTypes" class="form-control"></select>
+						</div>
+						<div class="form-group">
+							<label>Model Property (ng-model to bind back to)</label>
+							<input type="text" ng-model="currentModel" ng-change="addModel()" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Required</label>
+							<input type="checkbox" ng-model="currentField.required"/>
+						</div>
+						<div class="form-group">
+							<label>Placeholder Text</label>
+							<input type="text" ng-model="currentField.placeholder" class="form-control"/>
+						</div>
+					</form>
+				</div>
+
+				<div ng-hide="myForm.fields.length == 0">
+					<h4>Current Form Fields<h4>
+						<table class="table table-bordered">
+							<thead>
+								<th>Label</th>
+								<th>Type</th>
+								<th>Actions</th>
+							</thead>
+							<tbody>
+								<tr ng-repeat="field in myForm.fields">
+									<td>{{field.label.name}}</td>
+									<td>{{field.type}}</td>
+									<td>
+										<button type="button" class="btn btn-primary btn-xs" ng-click="editField(field)">Edit</button>
+										<button type="button" class="btn btn-danger btn-xs" ng-click="deleteField(field)">Delete</button>
+									</td>
+								</tr>	
+							</tbody>
+						</table>
+					</div>
+				</div>
+			<div class="col-lg-4">
+				<h1>Form Groups</h1>
 			</div>
-			<div class="col-lg-6">
-				Person Data:
-				<pre>{{person | json}}</pre>
+			<div class="col-lg-4">
+				<h1>Resulting Form</h1>
+				<div form-generator form="myForm"></div>
+
+				<h1>Form Model</h1>
+				<pre>{{myFormModel | json}}</pre>
+				<!-- Person Data: -->
+				<!-- <pre>{{person | json}}</pre> -->
 			</div>
 		</div>
 	</div>
