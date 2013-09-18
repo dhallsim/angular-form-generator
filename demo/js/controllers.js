@@ -1,8 +1,6 @@
 'use strict';
 
 function indexCtrl($scope) {
-	$scope.editingField = false;
-
 	$scope.fieldTypes = [
 		{
 			name: 'Text Input',
@@ -43,37 +41,114 @@ function indexCtrl($scope) {
 	];
 
 	$scope.myForm = {
+		classes: [],
+		attributes: {},
 		fields: [],
 		groups: []
 	};
 
 	$scope.myFormModel = {};
+	$scope.currentFormClasses = null;
 
+	$scope.editingField = false;
 	$scope.currentField = null;
-	$scope.currentType = null;
-	$scope.currentModel = null;
+	$scope.currentFieldType = null;
+	$scope.currentFieldModel = null;
+	$scope.currentFieldClasses = null;
+	$scope.currentLabelClasses = null;
+
+	$scope.editingFieldOption = false;
+	$scope.currentFieldOption = null;
+	$scope.currentFieldOptionLabelClasses = null;
+
+	$scope.editingGroup = false;
+	$scope.currentGroup = null;
+	$scope.currentGroupClasses = null;
+
+	$scope.addFormClasses = function() {
+		var classArr = $scope.currentFormClasses.split(',');
+		$scope.myForm.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.myForm.classes.push(classItem);
+		});
+	};
 
 	$scope.newField = function() {
-		$scope.currentType = $scope.fieldTypes[0];
-		$scope.currentModel = null;
+		$scope.currentFieldType = $scope.fieldTypes[0];
+		$scope.currentFieldModel = null;
+		$scope.currentFieldClasses = null;
+		$scope.currentLabelClasses = null;
 		$scope.editingField = true;
 		$scope.currentField = {
 			label: {
 				classes: []
 			},
 			options: [],
-			type: $scope.currentType.value
+			type: $scope.currentFieldType.value
 		};
 		$scope.myForm.fields.push($scope.currentField);
 	};
 
-	$scope.addType = function() {
-		$scope.currentField.type = $scope.currentType.value;
+	$scope.addFieldType = function() {
+		$scope.currentField.type = $scope.currentFieldType.value;
 	};
 
-	$scope.addModel = function() {
-		var modelStr = 'myFormModel.' + $scope.currentModel;
+	$scope.addFieldModel = function() {
+		var modelStr = 'myFormModel.' + $scope.currentFieldModel;
 		$scope.currentField.model = modelStr;
+	};
+
+	$scope.addFieldClasses = function() {
+		var classArr = $scope.currentFieldClasses.split(',');
+		$scope.currentField.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.currentField.classes.push(classItem);
+		});
+	};
+
+	$scope.showFieldOptions = function() {
+		if (!$scope.currentFieldType) return false;
+		var type = $scope.currentFieldType.value;
+		return (type === 'radio' || type === 'checkbox');
+	};
+
+	$scope.newFieldOption = function() {
+		$scope.editingFieldOption = true;
+		$scope.currentFieldOptionLabelClasses = null;
+		$scope.currentFieldOption = {
+			label: {
+				classes: []
+			}
+		};	
+		$scope.currentField.options.push($scope.currentFieldOption);
+	};
+
+	$scope.editFieldOption = function(option) {
+		$scope.currentFieldOption = option;
+		$scope.editingFieldOption = true;
+	};
+
+	$scope.deleteFieldOption = function(option) {
+		var index = $scope.currentField.options.indexOf(option);
+		if (index != -1) {
+			$scope.currentField.options.splice(index, 1);
+			$scope.currentFieldOption = null;
+			$scope.editingFieldOption = false;
+		}
+	};
+ 
+	$scope.showFieldPlaceholder = function() {
+		if (!$scope.currentFieldType) return false;
+		var type = $scope.currentFieldType.value;
+		return (type === 'text' || type === 'email' || type === 'number' || type === 'password' || type === 'telephone' || type === 'textarea');
+	};
+
+	$scope.addLabelClasses = function() {
+		var classArr = $scope.currentLabelClasses.split(',');
+		$scope.currentField.label.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.currentField.label.classes.push(classItem);
+		});
 	};
 
 	$scope.editField = function(field) {
@@ -92,52 +167,36 @@ function indexCtrl($scope) {
 		}
 	};
 
+	$scope.newGroup = function() {
+		$scope.currentGroupClasses = null;
+		$scope.editingGroup = true;
+		$scope.currentGroup = {
+			classes: [],
+			attributes: {}
+		};
+		$scope.myForm.groups.push($scope.currentGroup);
+	};
 
+	$scope.editGroup = function(group) {
+		$scope.currentGroup = group;
+		$scope.editingGroup = true;
+	};
 
-
-
-
-
-	$scope.countries = [
-		{
-			name: 'United States',
-			code: 'US'
-		},
-		{
-			name: 'Japan',
-			code: 'JP'
-		},
-		{
-			name: 'Mexico',
-			code: 'MX'
-		},
-		{
-			name: 'Canada',
-			code: 'CA'
+	$scope.deleteGroup = function(group) {
+		var index = $scope.myForm.groups.indexOf(group);
+		if (index != -1) {
+			$scope.myForm.groups.splice(index, 1);
+			$scope.currentGroup = null;
+			$scope.editingGroup = false;
 		}
-	];
+	};
 
-	$scope.bands = [
-		{
-			name: 'August Burns Red',
-			genre: 'metalcore'
-		},
-		{
-			name: 'Blink-182',
-			genre: 'pop punk'
-		},
-		{
-			name: 'Tool',
-			genre: 'progressive metal'
-		},
-		{
-			name: 'Senses Fail',
-			genre: 'emo'
-		}
-	];
-
-	$scope.person = {
-		codingExperience: 'junior'
+	$scope.addGroupClasses = function() {
+		var classArr = $scope.currentGroupClasses.split(',');
+		$scope.currentGroup.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.currentGroup.classes.push(classItem);
+		});
 	};
 
 	$scope.form = {
@@ -157,62 +216,6 @@ function indexCtrl($scope) {
 				placeholder: 'Enter name here',
 				classes: ['form-control'],
 				required: false,
-				group: 1
-			},
-			{
-				label: {
-					name: 'Age',
-					classes: [],
-					wrapField: false
-				},
-				type: 'number',
-				model: 'person.age',
-				placeholder: 'Enter Age here',
-				classes: ['form-control'],
-				required: true,
-				group: 1,
-				attributes: {
-					min: 1,
-					max: 120
-				}
-			},
-			{
-				label: {
-					name: 'Password',
-					classes: [],
-					wrapField: false
-				},
-				type: 'password',
-				model: 'person.password',
-				placeholder: 'Enter password here',
-				classes: ['form-control'],
-				required: true,
-				group: 1
-			},
-			{
-				label: {
-					name: 'Email',
-					classes: [],
-					wrapField: false
-				},
-				type: 'email',
-				model: 'person.email',
-				placeholder: 'Enter email here',
-				classes: ['form-control'],
-				required: true,
-				group: 1
-			},
-			{
-				label: {
-					name: 'Website',
-					classes: [],
-					wrapField: false
-				},
-				type: 'url',
-				placeholder: 'Enter url here',
-				model: 'person.website',
-				classes: ['form-control'],				
-				required: true,
 				group: 1
 			},
 			{
@@ -378,24 +381,5 @@ function indexCtrl($scope) {
 				attributes: {}
 			}
 		]
-	};
-
-	$scope.addField = function() {
-		var field = {
-			label: {
-				name: 'Another Input',
-				classes: [],
-				wrapField: false,
-				attributes: {}
-			},
-			type: 'text',
-			model: 'person.ballsack',
-			placeholder: 'Enter something',
-			required: false,
-			classes: ['form-control'],
-			group: 1
-		};
-
-		$scope.form.fields.push(field);
 	};
 }

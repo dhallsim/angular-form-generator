@@ -4,6 +4,7 @@
 <head>
 	<title>Form Generator Test</title>
 	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="demo/css/app.css" rel="stylesheet">
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>	
 	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -15,7 +16,7 @@
 
 </head>
 <body ng-controller="indexCtrl">
-	<div class="container" style="margin-top: 40px;">
+	<div class="container" style="margin-top: 20px;">
 		<div class="row">
 			<div class="col-lg-4">
 				<h1>Form Fields</h1>
@@ -27,51 +28,161 @@
 							<label>Label</label>
 							<input type="text" ng-model="currentField.label.name" class="form-control"/>
 
-							<label>Wrap Field?</label>
-							<input type="checkbox" ng-model="currentField.label.wrapField"/>
+							<div>
+								<label>Wrap Field?</label>
+								<input type="checkbox" ng-model="currentField.label.wrapField"/>
+							</div>
+
+							<label>Label Classes (separate by commas)</label>
+							<textarea ng-model="currentLabelClasses" ng-change="addLabelClasses()" class="form-control"></textarea>
 						</div>
 						<div class="form-group">
 							<label>Field Type</label>
-							<select ng-change="addType()" ng-model="currentType" ng-options="field.name for field in fieldTypes" class="form-control"></select>
+							<select ng-change="addFieldType()" ng-model="currentFieldType" ng-options="field.name for field in fieldTypes" class="form-control"></select>
 						</div>
 						<div class="form-group">
 							<label>Model Property (ng-model to bind back to)</label>
-							<input type="text" ng-model="currentModel" ng-change="addModel()" class="form-control">
+							<input type="text" ng-model="currentFieldModel" ng-change="addFieldModel()" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Required</label>
 							<input type="checkbox" ng-model="currentField.required"/>
 						</div>
-						<div class="form-group">
+						<div class="form-group" ng-show="showFieldPlaceholder()">
 							<label>Placeholder Text</label>
 							<input type="text" ng-model="currentField.placeholder" class="form-control"/>
 						</div>
-					</form>
-				</div>
+						<div class="form-group">
+							<label>Group ID</label>
+							<input type="number" ng-model="currentField.group" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label>Field Classes (separate by commas)</label>
+							<textarea ng-model="currentFieldClasses" ng-change="addFieldClasses()" class="form-control"></textarea>
+						</div>
+						<div class="form-group" ng-show="showFieldOptions()">
+							<h4>Options</h4>
+							<button class="btn btn-default" ng-click="newFieldOption()">Add Option</button>
+							<div ng-show="editingFieldOption">
+								<form>
+									<div class="form-group">
+										<label>Option Label</label>
+										<input type="text" ng-model="currentFieldOption.label.name" class="form-control"/>
 
-				<div ng-hide="myForm.fields.length == 0">
-					<h4>Current Form Fields<h4>
+										<div>
+											<label>Wrap Option?</label>
+											<input type="checkbox" ng-model="currentFieldOption.label.wrapField"/>
+										</div>
+
+										<label>Option Label Classes (separate by commas)</label>
+										<textarea ng-model="currentFieldOptionLabelClasses" ng-change="addOptionLabelClasses()" class="form-control"></textarea>
+									</div>
+									<div class="form-group">
+										<label>Option Value</label>
+										<input type="text" ng-model="currentFieldOption.value" class="form-control"/>
+									</div>
+									<div class="form-group">
+										<label>Option Group ID</label>
+										<input type="number" min="0" ng-model="currentFieldOption.group" class="form-control"/>
+									</div>
+								</form>	
+							</div>
+						</div>
+					</form>
+
+					<div ng-hide="currentField.options.length == 0">
+						<h4>Current Field Options<h4>
 						<table class="table table-bordered">
 							<thead>
 								<th>Label</th>
-								<th>Type</th>
+								<th>Value</th>
 								<th>Actions</th>
 							</thead>
 							<tbody>
-								<tr ng-repeat="field in myForm.fields">
-									<td>{{field.label.name}}</td>
-									<td>{{field.type}}</td>
+								<tr ng-repeat="option in currentField.options">
+									<td>{{option.label.name}}</td>
+									<td>{{option.value}}</td>
 									<td>
-										<button type="button" class="btn btn-primary btn-xs" ng-click="editField(field)">Edit</button>
-										<button type="button" class="btn btn-danger btn-xs" ng-click="deleteField(field)">Delete</button>
+										<button type="button" class="btn btn-primary btn-xs" ng-click="editFieldOption(option)">Edit</button>
+										<button type="button" class="btn btn-danger btn-xs" ng-click="deleteFieldOption(option)">Delete</button>
 									</td>
 								</tr>	
 							</tbody>
 						</table>
 					</div>
 				</div>
+
+				<div ng-hide="myForm.fields.length == 0">
+					<h4>Current Form Fields<h4>
+					<table class="table table-bordered">
+						<thead>
+							<th>Label</th>
+							<th>Type</th>
+							<th>Actions</th>
+						</thead>
+						<tbody>
+							<tr ng-repeat="field in myForm.fields">
+								<td>{{field.label.name}}</td>
+								<td>{{field.type}}</td>
+								<td>
+									<button type="button" class="btn btn-primary btn-xs" ng-click="editField(field)">Edit</button>
+									<button type="button" class="btn btn-danger btn-xs" ng-click="deleteField(field)">Delete</button>
+								</td>
+							</tr>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+
 			<div class="col-lg-4">
+				<h1>Form Properties</h1>
+				<form>
+					<div class="form-group">
+						<label>Form Classes (separate by commas)</label>
+						<textarea ng-model="currentFormClasses" ng-change="addFormClasses()" class="form-control"></textarea>
+					</div>
+				</form>
+
 				<h1>Form Groups</h1>
+				<button type="button" class="btn btn-default" ng-click="newGroup()">Add Group</button>
+
+				<div ng-show="editingGroup">
+					<form>
+						<div class="form-group">
+							<label>ID (integer to be referenced by field's group property)</label>
+							<input type="number" ng-model="currentGroup.id" min="0" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label>Name</label>
+							<input type="text" ng-model="currentGroup.name" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label>Group Classes (separate by commas)</label>
+							<textarea ng-model="currentGroupClasses" ng-change="addGroupClasses()" class="form-control"></textarea>
+						</div>
+					</form>
+				</div>
+
+				<div ng-hide="myForm.groups.length == 0">
+					<h4>Current Form Groups<h4>
+					<table class="table table-bordered">
+						<thead>
+							<th>Name</th>
+							<th>ID</th>
+							<th>Actions</th>
+						</thead>
+						<tbody>
+							<tr ng-repeat="group in myForm.groups">
+								<td>{{group.name}}</td>
+								<td>{{group.id}}</td>
+								<td>
+									<button type="button" class="btn btn-primary btn-xs" ng-click="editGroup(group)">Edit</button>
+									<button type="button" class="btn btn-danger btn-xs" ng-click="deleteGroup(group)">Delete</button>
+								</td>
+							</tr>	
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="col-lg-4">
 				<h1>Resulting Form</h1>
@@ -79,8 +190,6 @@
 
 				<h1>Form Model</h1>
 				<pre>{{myFormModel | json}}</pre>
-				<!-- Person Data: -->
-				<!-- <pre>{{person | json}}</pre> -->
 			</div>
 		</div>
 	</div>
