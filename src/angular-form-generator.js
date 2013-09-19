@@ -367,8 +367,11 @@ directive('formGenerator', function($compile) {
 				currentObj[finalProp] = list;
 			}
 
-			if (list.contains(value)) {
-				list.remove(value);
+			if (contains(list, value)) {
+				var index = list.indexOf(value);
+				if (index !== -1) {
+					list.splice(index, 1);
+				}
 			} else {
 				list.push(value);
 			}
@@ -388,25 +391,17 @@ directive('formGenerator', function($compile) {
 			}
 		}, true);
 
-		// Remove these and implement differently.
 		function contains(a, obj) {
-			var i = this.length;
-			while (i--) {
-				if (this[i] == obj) return true;
-			}
-			return false;
-		};
+			var i = a.length;
 
-		Array.prototype.remove = function() {
-			var what, a = arguments, L = a.length, ax;
-			while (L && this.length) {
-				what = a[--L];
-				while ((ax = this.indexOf(what)) !== -1) {
-					this.splice(ax, 1);
+			while (i--) {
+				if (a[i] === obj) {
+					return true;
 				}
 			}
-			return this;
-		};
+			
+			return false;
+		}
 	};
 
 	return {
