@@ -40,170 +40,45 @@ function indexCtrl($scope) {
 		}
 	];
 
+	$scope.bands = [
+		{
+			name: 'Tool',
+			genre: 'Progressive Metal'
+		},
+		{
+			name: 'Senses Fail',
+			genre: 'Emo'
+		},
+		{
+			name: 'Norma Jean',
+			genre: 'Metalcore'
+		},
+		{
+			name: 'Coheed and Cambria',
+			genre: 'Progressive Rock'
+		}
+	];
+
+	$scope.shows = [
+		{
+			name: 'Breaking Bad',
+		},
+		{
+			name: 'The Walking Dead',
+		},
+		{
+			name: 'Arrested Development',
+		},
+		{
+			name: 'Rules of Engagement',
+		}
+	];
+
+	$scope.person = {};
+
 	$scope.myForm = {
 		classes: [],
 		attributes: {},
-		fields: [],
-		groups: []
-	};
-
-	$scope.myFormModel = {};
-	$scope.currentFormClasses = null;
-
-	$scope.editingField = false;
-	$scope.currentField = null;
-	$scope.currentFieldType = null;
-	$scope.currentFieldModel = null;
-	$scope.currentFieldClasses = null;
-	$scope.currentLabelClasses = null;
-
-	$scope.editingFieldOption = false;
-	$scope.currentFieldOption = null;
-	$scope.currentFieldOptionLabelClasses = null;
-
-	$scope.editingGroup = false;
-	$scope.currentGroup = null;
-	$scope.currentGroupClasses = null;
-
-	$scope.addFormClasses = function() {
-		var classArr = $scope.currentFormClasses.split(',');
-		$scope.myForm.classes = [];
-		angular.forEach(classArr, function(classItem) {
-			$scope.myForm.classes.push(classItem);
-		});
-	};
-
-	$scope.newField = function() {
-		$scope.currentFieldType = $scope.fieldTypes[0];
-		$scope.currentFieldModel = null;
-		$scope.currentFieldClasses = null;
-		$scope.currentLabelClasses = null;
-		$scope.editingField = true;
-		$scope.currentField = {
-			label: {
-				classes: []
-			},
-			options: [],
-			type: $scope.currentFieldType.value
-		};
-		$scope.myForm.fields.push($scope.currentField);
-	};
-
-	$scope.addFieldType = function() {
-		$scope.currentField.type = $scope.currentFieldType.value;
-	};
-
-	$scope.addFieldModel = function() {
-		var modelStr = 'myFormModel.' + $scope.currentFieldModel;
-		$scope.currentField.model = modelStr;
-	};
-
-	$scope.addFieldClasses = function() {
-		var classArr = $scope.currentFieldClasses.split(',');
-		$scope.currentField.classes = [];
-		angular.forEach(classArr, function(classItem) {
-			$scope.currentField.classes.push(classItem);
-		});
-	};
-
-	$scope.showFieldOptions = function() {
-		if (!$scope.currentFieldType) return false;
-		var type = $scope.currentFieldType.value;
-		return (type === 'radio' || type === 'checkbox');
-	};
-
-	$scope.newFieldOption = function() {
-		$scope.editingFieldOption = true;
-		$scope.currentFieldOptionLabelClasses = null;
-		$scope.currentFieldOption = {
-			label: {
-				classes: []
-			}
-		};	
-		$scope.currentField.options.push($scope.currentFieldOption);
-	};
-
-	$scope.editFieldOption = function(option) {
-		$scope.currentFieldOption = option;
-		$scope.editingFieldOption = true;
-	};
-
-	$scope.deleteFieldOption = function(option) {
-		var index = $scope.currentField.options.indexOf(option);
-		if (index != -1) {
-			$scope.currentField.options.splice(index, 1);
-			$scope.currentFieldOption = null;
-			$scope.editingFieldOption = false;
-		}
-	};
- 
-	$scope.showFieldPlaceholder = function() {
-		if (!$scope.currentFieldType) return false;
-		var type = $scope.currentFieldType.value;
-		return (type === 'text' || type === 'email' || type === 'number' || type === 'password' || type === 'telephone' || type === 'textarea');
-	};
-
-	$scope.addLabelClasses = function() {
-		var classArr = $scope.currentLabelClasses.split(',');
-		$scope.currentField.label.classes = [];
-		angular.forEach(classArr, function(classItem) {
-			$scope.currentField.label.classes.push(classItem);
-		});
-	};
-
-	$scope.editField = function(field) {
-		$scope.currentModel = (field.model) ? field.model.split('.')[1] : null;
-		$scope.currentField = field;
-		$scope.editingField = true;
-	};
-
-	$scope.deleteField = function(field) {
-		var index = $scope.myForm.fields.indexOf(field);
-		if (index != -1) {
-			$scope.myForm.fields.splice(index, 1);
-			$scope.currentField = null;
-			$scope.currentModel = null;
-			$scope.editingField = false;
-		}
-	};
-
-	$scope.newGroup = function() {
-		$scope.currentGroupClasses = null;
-		$scope.editingGroup = true;
-		$scope.currentGroup = {
-			classes: [],
-			attributes: {}
-		};
-		$scope.myForm.groups.push($scope.currentGroup);
-	};
-
-	$scope.editGroup = function(group) {
-		$scope.currentGroup = group;
-		$scope.editingGroup = true;
-	};
-
-	$scope.deleteGroup = function(group) {
-		var index = $scope.myForm.groups.indexOf(group);
-		if (index != -1) {
-			$scope.myForm.groups.splice(index, 1);
-			$scope.currentGroup = null;
-			$scope.editingGroup = false;
-		}
-	};
-
-	$scope.addGroupClasses = function() {
-		var classArr = $scope.currentGroupClasses.split(',');
-		$scope.currentGroup.classes = [];
-		angular.forEach(classArr, function(classItem) {
-			$scope.currentGroup.classes.push(classItem);
-		});
-	};
-
-	$scope.form = {
-		classes: [],
-		attributes: {
-			id: 'ballsack'
-		},
 		fields: [
 			{
 				label: {
@@ -282,22 +157,12 @@ function indexCtrl($scope) {
 			},
 			{
 				label: {
-					name: 'Remember Me',
-					classes: [],
-					wrapField: true
-				},
-				type: 'checkbox',
-				model: 'person.remember',
-				group: 2
-			},
-			{
-				label: {
 					name: 'Programming Languages',
 					classes: [],
 					wrapField: false
 				},
 				type: 'checkbox',
-				model: 'person.test.testing.tested.languages',
+				model: 'person.languages',
 				options: [
 					{
 						label: {
@@ -332,20 +197,22 @@ function indexCtrl($scope) {
 						value: 'Python'
 					}
 				],
-				required: true
+				required: true,
+				group: 1
 			},
 			{
 				label: {
-					name: 'Country',
+					name: 'Favorite Show',
 					classes: [],
-					wrapField: true
+					wrapField: false
 				},
 				type: 'select',
 				multiple: false,
-				model: 'person.country',
+				model: 'person.favoriteShow',
 				required: true,
 				classes: ['form-control'],
-				optionsExpression: 'country.name for country in countries'
+				group: 1,
+				optionsExpression: 'show.name for show in shows'
 			},
 			{
 				label: {
@@ -358,28 +225,196 @@ function indexCtrl($scope) {
 				model: 'person.favoriteBands',
 				required: true,
 				classes: ['form-control'],
+				group: 1,
 				optionsExpression: 'band.name for band in bands'
 			}
 		],
 		groups: [
 			{
 				id: 1,
-				name: 'group1',
+				name: 'Form Group',
 				classes: ['form-group'],
 				attributes: {}
 			},
 			{
 				id: 2,
-				name: 'checkboxGroup',
+				name: 'Checkbox Group',
 				classes: ['checkbox'],
 				attributes: {}
 			},
 			{
 				id: 3,
-				name: 'radioGroup',
+				name: 'Radio Group',
 				classes: ['radio'],
 				attributes: {}
 			}
 		]
+	};
+
+	$scope.currentFormClasses = null;
+
+	$scope.editingField = false;
+	$scope.currentField = null;
+	$scope.currentFieldType = null;
+	$scope.currentFieldModel = null;
+	$scope.currentFieldClasses = null;
+	$scope.currentLabelClasses = null;
+
+	$scope.editingFieldOption = false;
+	$scope.currentFieldOption = null;
+	$scope.currentFieldOptionLabelClasses = null;
+
+	$scope.editingGroup = false;
+	$scope.currentGroup = null;
+	$scope.currentGroupClasses = null;
+
+	$scope.addFormClasses = function() {
+		var classArr = $scope.currentFormClasses.split(',');
+		$scope.myForm.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.myForm.classes.push(classItem);
+		});
+	};
+
+	$scope.newField = function() {
+		$scope.currentFieldType = $scope.fieldTypes[0];
+		$scope.currentFieldModel = null;
+		$scope.currentFieldClasses = null;
+		$scope.currentLabelClasses = null;
+		$scope.editingField = true;
+		$scope.currentField = {
+			label: {
+				classes: []
+			},
+			options: [],
+			type: $scope.currentFieldType.value
+		};
+		$scope.myForm.fields.push($scope.currentField);
+	};
+
+	$scope.addFieldType = function() {
+		$scope.currentField.type = $scope.currentFieldType.value;
+	};
+
+	$scope.addFieldModel = function() {
+		var modelStr = 'person.' + $scope.currentFieldModel;
+		$scope.currentField.model = modelStr;
+	};
+
+	$scope.addFieldClasses = function() {
+		var classArr = $scope.currentFieldClasses.split(',');
+		$scope.currentField.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.currentField.classes.push(classItem);
+		});
+	};
+
+	$scope.showFieldOptions = function() {
+		if (!$scope.currentFieldType) return false;
+		var type = $scope.currentFieldType.value;
+		return (type === 'radio' || type === 'checkbox');
+	};
+
+	$scope.newFieldOption = function() {
+		$scope.editingFieldOption = true;
+		$scope.currentFieldOptionLabelClasses = null;
+		$scope.currentFieldOption = {
+			label: {
+				classes: []
+			}
+		};	
+		$scope.currentField.options.push($scope.currentFieldOption);
+	};
+
+	$scope.editFieldOption = function(option) {
+		$scope.currentFieldOption = option;
+		$scope.editingFieldOption = true;
+		$scope.currentFieldOptionLabelClasses = option.label.classes.join(',');
+	};
+
+	$scope.deleteFieldOption = function(option) {
+		var index = $scope.currentField.options.indexOf(option);
+		if (index != -1) {
+			$scope.currentField.options.splice(index, 1);
+			$scope.currentFieldOption = null;
+			$scope.editingFieldOption = false;
+		}
+	};
+ 
+	$scope.showFieldPlaceholder = function() {
+		if (!$scope.currentFieldType) return false;
+		var type = $scope.currentFieldType.value;
+		return (type === 'text' || type === 'email' || type === 'number' || type === 'password' || type === 'telephone' || type === 'textarea');
+	};
+
+	$scope.addLabelClasses = function() {
+		var classArr = $scope.currentLabelClasses.split(',');
+		$scope.currentField.label.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.currentField.label.classes.push(classItem);
+		});
+	};
+
+	$scope.editField = function(field) {
+		$scope.currentFieldModel = (field.model) ? field.model.split('.')[1] : null;
+		$scope.currentField = field;
+
+		$scope.currentLabelClasses = field.label.classes.join(',');
+
+		// Set field type
+		for (var i = 0; i < $scope.fieldTypes.length; i++) {
+			if ($scope.fieldTypes[i].value === field.type) {
+				$scope.currentFieldType = $scope.fieldTypes[i];
+				break;
+			}
+		}
+
+		// Set field classes 
+		$scope.currentFieldClasses = field.classes.join(',');
+
+		$scope.editingField = true;
+	};
+
+	$scope.deleteField = function(field) {
+		var index = $scope.myForm.fields.indexOf(field);
+		if (index != -1) {
+			$scope.myForm.fields.splice(index, 1);
+			$scope.currentField = null;
+			$scope.currentModel = null;
+			$scope.editingField = false;
+		}
+	};
+
+	$scope.newGroup = function() {
+		$scope.currentGroupClasses = null;
+		$scope.editingGroup = true;
+		$scope.currentGroup = {
+			classes: [],
+			attributes: {}
+		};
+		$scope.myForm.groups.push($scope.currentGroup);
+	};
+
+	$scope.editGroup = function(group) {
+		$scope.currentGroup = group;
+		$scope.currentGroupClasses = group.classes.join(',');
+		$scope.editingGroup = true;
+	};
+
+	$scope.deleteGroup = function(group) {
+		var index = $scope.myForm.groups.indexOf(group);
+		if (index != -1) {
+			$scope.myForm.groups.splice(index, 1);
+			$scope.currentGroup = null;
+			$scope.editingGroup = false;
+		}
+	};
+
+	$scope.addGroupClasses = function() {
+		var classArr = $scope.currentGroupClasses.split(',');
+		$scope.currentGroup.classes = [];
+		angular.forEach(classArr, function(classItem) {
+			$scope.currentGroup.classes.push(classItem);
+		});
 	};
 }
